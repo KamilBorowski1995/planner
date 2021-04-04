@@ -4,6 +4,7 @@ export const theme = {
       primary: "#1F2128",
       secondary: "#ECECED",
       tertiary: "#768991",
+      shadow: "#34495E",
     },
   },
   font: {

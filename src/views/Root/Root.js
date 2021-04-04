@@ -1,9 +1,12 @@
+import List from "views/List";
 import "./Root.css";
 
 function Root() {
   return (
     <div className="App">
-      <header className="App-header">Strona główna</header>
+      <header className="App-header">
+        <List />
+      </header>
     </div>
   );
 }
