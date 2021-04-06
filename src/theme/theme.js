@@ -6,6 +6,12 @@ export const theme = {
       tertiary: "#768991",
       shadow: "#34495E",
     },
+    light: {
+      primary: "#FFFFFF",
+      secondary: "#FFA012",
+      tertiary: "#303030",
+      shadow: "rgba(255,160,18,.24)",
+    },
   },
   font: {
     primary: "'Roboto', sans-serif",

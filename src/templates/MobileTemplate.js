@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
-import { theme } from "theme/theme";
 
 import { ReactComponent as IconList } from "assets/svg/icon-list.svg";
 import { ReactComponent as IconCalendar } from "assets/svg/icon-calendar.svg";
@@ -22,6 +21,7 @@ const ContentWrapper = styled.div`
   box-shadow: 0 0 8px 1px ${({ themeColors }) => themeColors.shadow};
   border-radius: 20px;
   overflow: hidden;
+  padding: 20px;
 `;
 const IconWrapper = styled.nav`
   flex-basis: 100px;
@@ -54,7 +54,7 @@ const StyledSvgCalendar = styled(IconCalendar)`
 
   path {
     fill: ${({ active, themecolors }) =>
-      active === "list" ? themecolors.secondary : themecolors.tertiary};
+      active === "calendar" ? themecolors.secondary : themecolors.tertiary};
   }
 
   :hover {
@@ -77,6 +77,11 @@ function MobileTemplate({ children, setHeight }) {
   useEffect(() => {
     setHeight(IconWrapperRef.current.clientHeight);
   });
+
+  // funkcja tymczasowa
+  useEffect(() => {
+    setActiveView("list");
+  }, []);
 
   const IconWrapperRef = useRef(null);
 

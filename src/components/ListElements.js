@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
 
-import { ReactComponent as IconPencil } from "assets/svg/icon-pencil.svg";
 import { ReactComponent as IconTrash } from "assets/svg/icon-trash.svg";
 
 const Wrapper = styled.div`
@@ -39,10 +38,31 @@ const StyledElementTitle = styled.p`
   color: ${({ themeColors }) => themeColors.tertiary};
 `;
 
-const StyledButtonsList = styled.div``;
+const StyledButtonsList = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const StyledSvgTrash = styled(IconTrash)`
+  transition: 0.2s ease-in-out;
+  margin-right: 5px;
+  path {
+    fill: ${({ themecolors }) => themecolors.tertiary};
+  }
+
+  :hover {
+    transform: scale(1.05);
+  }
+`;
 
 function ListElements({ dataBase }) {
   const themeColors = useContext(ThemeContext);
+
+  const getDate = (time) => {
+    const date = new Date(time);
+    const getDates = date.toDateString();
+    return getDates;
+  };
 
   const MapElementsList = dataBase.elements.map(
     ({ id, title, date, color }) => (
@@ -51,11 +71,10 @@ function ListElements({ dataBase }) {
 
         <StyledWrapperTitleAndButtons themeColors={themeColors}>
           <StyledElementTitle themeColors={themeColors}>
-            {title}
+            {title} <p>data to: {getDate(date)}</p>
           </StyledElementTitle>
           <StyledButtonsList>
-            <div className="edit">add</div>
-            <div className="delete">del</div>
+            <StyledSvgTrash themecolors={themeColors} />
           </StyledButtonsList>
         </StyledWrapperTitleAndButtons>
       </StyledElement>
