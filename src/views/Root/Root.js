@@ -25,8 +25,8 @@ function Root() {
   return (
     <ThemeContext.Provider value={themeColors}>
       <div className="App">
-        {/* <List /> */}
-        <Calendar />
+        <List />
+        {/* <Calendar /> */}
       </div>
     </ThemeContext.Provider>
   );
