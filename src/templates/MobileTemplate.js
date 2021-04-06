@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import styled from "styled-components";
 
+import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
 
 import { ReactComponent as IconList } from "assets/svg/icon-list.svg";
@@ -11,15 +12,14 @@ const Wrapper = styled.div`
   height: ${({ viewH }) => `${viewH * 100}px`};
   padding: 15px 15px 5px;
 
-  background-color: ${theme.colors.dark.primary};
-  color: ${theme.colors.dark.secondary};
-
+  background-color: ${({ themeColors }) => themeColors.primary};
+  color: ${({ themeColors }) => themeColors.secondary};
   display: flex;
   flex-direction: column;
 `;
 const ContentWrapper = styled.div`
   flex-grow: 1;
-  box-shadow: 0 0 8px 1px ${theme.colors.dark.shadow};
+  box-shadow: 0 0 8px 1px ${({ themeColors }) => themeColors.shadow};
   border-radius: 20px;
   overflow: hidden;
 `;
@@ -41,10 +41,8 @@ const StyledSvgList = styled(IconList)`
   transition: 0.2s ease-in-out;
 
   path {
-    fill: ${({ active }) =>
-      active === "list"
-        ? theme.colors.dark.secondary
-        : theme.colors.dark.tertiary};
+    fill: ${({ active, themecolors }) =>
+      active === "list" ? themecolors.secondary : themecolors.tertiary};
   }
 
   :hover {
@@ -55,10 +53,8 @@ const StyledSvgCalendar = styled(IconCalendar)`
   transition: 0.2s ease-in-out;
 
   path {
-    fill: ${({ active }) =>
-      active === "calendar"
-        ? theme.colors.dark.secondary
-        : theme.colors.dark.tertiary};
+    fill: ${({ active, themecolors }) =>
+      active === "list" ? themecolors.secondary : themecolors.tertiary};
   }
 
   :hover {
@@ -70,12 +66,12 @@ function MobileTemplate({ children, setHeight }) {
   const [viewH, setViewH] = useState(0);
   const [activeView, setActiveView] = useState("list");
 
+  const themeColors = useContext(ThemeContext);
+
   useEffect(() => {
     let vh = window.innerHeight * 0.01;
 
     setViewH(vh);
-
-    //
   }, []);
 
   useEffect(() => {
@@ -85,17 +81,17 @@ function MobileTemplate({ children, setHeight }) {
   const IconWrapperRef = useRef(null);
 
   return (
-    <Wrapper viewH={viewH}>
-      <ContentWrapper>{children}</ContentWrapper>
+    <Wrapper viewH={viewH} themeColors={themeColors}>
+      <ContentWrapper themeColors={themeColors}>{children}</ContentWrapper>
       <IconWrapper ref={IconWrapperRef}>
         <StyledList>
           <li>
-            <StyledSvgList active={activeView} />
+            <StyledSvgList active={activeView} themecolors={themeColors} />
           </li>
         </StyledList>
         <StyledList>
           <li>
-            <StyledSvgCalendar active={activeView} />
+            <StyledSvgCalendar active={activeView} themecolors={themeColors} />
           </li>
         </StyledList>
       </IconWrapper>

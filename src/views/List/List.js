@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 
 import MobileTemplate from "templates/MobileTemplate";
+import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
 
 import ListElements from "components/ListElements";
@@ -121,7 +122,7 @@ const WrapperElements = styled.div`
 
 const StyledTitle = styled.h2`
   margin-bottom: 20px;
-  color: ${theme.colors.dark.secondary};
+  color: ${({ themeColors }) => themeColors.secondary};
   font-size: ${theme.size.xl};
   font-weight: 500;
 `;
@@ -135,7 +136,7 @@ const WrapperInput = styled.div`
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid ${theme.colors.dark.tertiary};
+  border: 1px solid ${({ themeColors }) => themeColors.tertiary};
   border-radius: 10px;
   padding: 10px 15px;
   background-color: transparent;
@@ -143,20 +144,16 @@ const StyledInput = styled.input`
   font-size: ${theme.size.m};
 
   ::placeholder {
-    font-family: ${theme.font.secondary};
+    font-family: ${({ themeColors }) => themeColors.secondary};
     letter-spacing: 1px;
-    color: ${theme.colors.dark.tertiary};
+    color: ${({ themeColors }) => themeColors.tertiary};
     font-size: ${theme.size.s};
   }
 `;
 
 const StyledButton = styled.button`
   background-color: transparent;
-  color: ${({ color }) =>
-    color === "dark"
-      ? `${theme.colors.dark.tertiary}`
-      : `${theme.colors.dark.secondary}`};
-  /* color: ${theme.colors.dark.tertiary}; */
+  color: ${({ themeColors }) => themeColors.tertiary};
   font-size: ${theme.size.xl};
   border: none;
 `;
@@ -164,6 +161,8 @@ const StyledButton = styled.button`
 function List() {
   const [heightWrapperNav, setHeightWrapperNav] = useState(50);
   const [size, setSize] = useState(150);
+
+  const themeColors = useContext(ThemeContext);
 
   useEffect(() => {
     const heightSite = document.body.clientHeight;
@@ -175,11 +174,15 @@ function List() {
   return (
     <MobileTemplate setHeight={setHeight}>
       <WrapperElements size={size}>
-        <StyledTitle>{dataBase.name}</StyledTitle>
+        <StyledTitle themeColors={themeColors}>{dataBase.name}</StyledTitle>
 
         <WrapperInput>
-          <StyledInput type="text" placeholder="Dodaj nowe zadanie..." />
-          <StyledButton color="dark">+</StyledButton>
+          <StyledInput
+            themeColors={themeColors}
+            type="text"
+            placeholder="Dodaj nowe zadanie..."
+          />
+          <StyledButton themeColors={themeColors}>+</StyledButton>
         </WrapperInput>
 
         <ListElements dataBase={dataBase} />

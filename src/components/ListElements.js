@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import styled from "styled-components";
 
+import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
+
+import { ReactComponent as IconPencil } from "assets/svg/icon-pencil.svg";
+import { ReactComponent as IconTrash } from "assets/svg/icon-trash.svg";
 
 const Wrapper = styled.div`
   /* max-height: 50vh; */
@@ -26,24 +31,28 @@ const StyledWrapperTitleAndButtons = styled.div`
   grid-template-columns: 1fr 10%;
   align-items: center;
   padding: 5px;
-  border-bottom: 1.5px solid ${theme.colors.dark.tertiary};
+  border-bottom: 1.5px solid ${({ themeColors }) => themeColors.tertiary};
 `;
 
 const StyledElementTitle = styled.p`
   font-size: ${theme.size.s};
-  color: ${theme.colors.dark.tertiary};
+  color: ${({ themeColors }) => themeColors.tertiary};
 `;
 
 const StyledButtonsList = styled.div``;
 
 function ListElements({ dataBase }) {
+  const themeColors = useContext(ThemeContext);
+
   const MapElementsList = dataBase.elements.map(
     ({ id, title, date, color }) => (
       <StyledElement key={id}>
         <StyledColorList color={color}></StyledColorList>
 
-        <StyledWrapperTitleAndButtons>
-          <StyledElementTitle>{title}</StyledElementTitle>
+        <StyledWrapperTitleAndButtons themeColors={themeColors}>
+          <StyledElementTitle themeColors={themeColors}>
+            {title}
+          </StyledElementTitle>
           <StyledButtonsList>
             <div className="edit">add</div>
             <div className="delete">del</div>
