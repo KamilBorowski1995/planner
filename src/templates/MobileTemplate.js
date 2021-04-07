@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useContext } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
@@ -42,7 +43,7 @@ const StyledSvgList = styled(IconList)`
 
   path {
     fill: ${({ active, themecolors }) =>
-      active === "list" ? themecolors.secondary : themecolors.tertiary};
+      active === "" ? themecolors.secondary : themecolors.tertiary};
   }
 
   :hover {
@@ -68,9 +69,10 @@ function MobileTemplate({ children, setHeight }) {
 
   const themeColors = useContext(ThemeContext);
 
+  const location = useLocation();
+
   useEffect(() => {
     let vh = window.innerHeight * 0.01;
-
     setViewH(vh);
   }, []);
 
@@ -78,10 +80,10 @@ function MobileTemplate({ children, setHeight }) {
     setHeight(IconWrapperRef.current.clientHeight);
   });
 
-  // funkcja tymczasowa
   useEffect(() => {
-    setActiveView("list");
-  }, []);
+    const path = location.pathname.slice(1);
+    setActiveView(path);
+  }, [location.pathname]);
 
   const IconWrapperRef = useRef(null);
 
@@ -91,12 +93,19 @@ function MobileTemplate({ children, setHeight }) {
       <IconWrapper ref={IconWrapperRef}>
         <StyledList>
           <li>
-            <StyledSvgList active={activeView} themecolors={themeColors} />
+            <NavLink to="/">
+              <StyledSvgList active={activeView} themecolors={themeColors} />
+            </NavLink>
           </li>
         </StyledList>
         <StyledList>
           <li>
-            <StyledSvgCalendar active={activeView} themecolors={themeColors} />
+            <NavLink to="/calendar">
+              <StyledSvgCalendar
+                active={activeView}
+                themecolors={themeColors}
+              />
+            </NavLink>
           </li>
         </StyledList>
       </IconWrapper>

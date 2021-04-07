@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
@@ -64,22 +64,20 @@ function ListElements({ dataBase }) {
     return getDates;
   };
 
-  const MapElementsList = dataBase.elements.map(
-    ({ id, title, date, color }) => (
-      <StyledElement key={id}>
-        <StyledColorList color={color}></StyledColorList>
+  const MapElementsList = dataBase.elements.map(({ id, title, color }) => (
+    <StyledElement key={id}>
+      <StyledColorList color={color}></StyledColorList>
 
-        <StyledWrapperTitleAndButtons themeColors={themeColors}>
-          <StyledElementTitle themeColors={themeColors}>
-            {title} <p>data to: {getDate(date)}</p>
-          </StyledElementTitle>
-          <StyledButtonsList>
-            <StyledSvgTrash themecolors={themeColors} />
-          </StyledButtonsList>
-        </StyledWrapperTitleAndButtons>
-      </StyledElement>
-    )
-  );
+      <StyledWrapperTitleAndButtons themeColors={themeColors}>
+        <StyledElementTitle themeColors={themeColors}>
+          {title}
+        </StyledElementTitle>
+        <StyledButtonsList>
+          <StyledSvgTrash themecolors={themeColors} />
+        </StyledButtonsList>
+      </StyledWrapperTitleAndButtons>
+    </StyledElement>
+  ));
 
   return <Wrapper>{MapElementsList}</Wrapper>;
 }

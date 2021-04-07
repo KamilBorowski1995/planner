@@ -7,10 +7,11 @@ export const theme = {
       shadow: "#34495E",
     },
     light: {
-      primary: "#FFFFFF",
-      secondary: "#FFA012",
-      tertiary: "#303030",
-      shadow: "rgba(255,160,18,.24)",
+      primary: "#312C51",
+      secondary: "#95A5A6",
+      tertiary: "#F1AA9B",
+      // shadow: "rgba(255,160,18,.24)",
+      shadow: "#34495E",
     },
   },
   font: {
