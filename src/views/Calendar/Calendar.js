@@ -14,6 +14,7 @@ const Wrapper = styled.div`
 
   display: flex;
   flex-direction: column;
+  font-family: ${theme.font.secondary};
 `;
 
 const StyledTitle = styled.h2`

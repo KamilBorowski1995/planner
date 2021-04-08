@@ -1,7 +1,11 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
+import Input from "components/Input";
+import Button from "components/Button";
+import Auth from "Functions/Auth";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -23,53 +27,38 @@ const WrapperInput = styled.div``;
 
 function Login() {
   const [viewH, setViewH] = useState(0);
-  const [nameValue, setNameValue] = useState("");
-  const [passValue, setPassValue] = useState("");
-  const [showPass, setShowPass] = useState(false);
 
   const themeColors = useContext(ThemeContext);
+
+  const history = useHistory();
 
   useEffect(() => {
     let vh = window.innerHeight * 0.01;
     setViewH(vh);
   }, []);
 
+  const handleButtonLogin = () => {
+    Auth.login(() => history.push("/"));
+  };
+
   return (
     <Wrapper viewH={viewH} themeColors={themeColors}>
       <ContentWrapper themeColors={themeColors}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <WrapperInput>
-            <img src="" alt="" />
-            <input
-              type="text"
-              value={nameValue}
-              onChange={(e) => setNameValue(e.target.value)}
-              placeholder="Nazwa użytkownika"
-            />
-          </WrapperInput>
-          <WrapperInput>
-            <img src="" alt="" />
-            <input
-              type={showPass ? "text" : "password"}
-              value={passValue}
-              onChange={(e) => setPassValue(e.target.value)}
-              placeholder="Hasło"
-            />
-            <span
-              onClick={(e) => {
-                e.preventDefault();
-                setShowPass((prev) => !prev);
-              }}
-            >
-              Pokaż
-            </span>
-          </WrapperInput>
-          <button>Zaloguj</button>
+          <Input name="Nazwa użytkownika" type="text" />
+          <Input name="Hasło" type="password" />
+          <Button onClick={handleButtonLogin}>Zaloguj</Button>
         </form>
+
+        {/* 
+        ------------------------
+        ## Funkcja do dodania ## 
+        ------------------------
 
         <a href="#" style={{ color: "white", display: "flex" }}>
           Nie pamiętasz hasła?
-        </a>
+        </a> */}
+
         <a href="#" style={{ color: "white", display: "flex" }}>
           Nie masz konta? Zarejestruj się!
         </a>

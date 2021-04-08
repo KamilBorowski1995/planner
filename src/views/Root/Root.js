@@ -10,6 +10,7 @@ import Calendar from "views/Calendar";
 import Login from "views/Login";
 
 import "./Root.css";
+import ProtectedRoute from "Functions/ProtectedRoute";
 
 function Root() {
   const [themeColors, setThemeColors] = useState(theme.colors.dark);
@@ -30,9 +31,10 @@ function Root() {
       <ThemeContext.Provider value={themeColors}>
         <div className="App">
           <Switch>
-            {/* <Route exact path="/" component={List} /> */}
-            <Route exact path="/" component={Login} />
-            <Route path="/calendar" component={Calendar} />
+            <ProtectedRoute exact path="/" component={List} />
+            <ProtectedRoute exact path="/calendar" component={Calendar} />
+
+            <Route path="/login" component={Login} />
           </Switch>
         </div>
       </ThemeContext.Provider>
