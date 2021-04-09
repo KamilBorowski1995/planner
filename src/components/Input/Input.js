@@ -51,7 +51,6 @@ const StyledShowPass = styled.span`
 `;
 
 function Input({ name, type, state, dispatch }) {
-  const [value, setValue] = useState("");
   const [showPass, setShowPass] = useState(false);
 
   const handleInput = (e) => {

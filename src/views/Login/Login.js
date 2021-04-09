@@ -42,20 +42,17 @@ function Login() {
     setViewH(vh);
   }, []);
 
-  useEffect(() => {
-    console.log(state);
-  });
-
   const handleLoginButton = () => {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:5000/api/user/login", state)
+      .post(process.env.REACT_APP_LOGIN_PATH, state)
       .then(function (response) {
         console.log(response);
         Auth.login(() => history.push("/"));
       })
-      .catch(function (error) {
+      .catch(function (error, res) {
         console.log(error);
+        console.log(res);
       });
   };
 
