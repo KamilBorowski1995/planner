@@ -12,6 +12,14 @@ import Login from "views/Login";
 import "./Root.css";
 import ProtectedRoute from "Functions/ProtectedRoute";
 
+// ------------------------------------------------------ //
+// ###################################################### //
+// ------------------------------------------------------ //
+// Dodać ekrany łądowania poczas zapytań do serwera       //
+// ------------------------------------------------------ //
+// ###################################################### //
+// ------------------------------------------------------ //
+
 function Root() {
   const [themeColors, setThemeColors] = useState(theme.colors.dark);
 

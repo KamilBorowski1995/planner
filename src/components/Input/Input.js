@@ -50,9 +50,13 @@ const StyledShowPass = styled.span`
   }
 `;
 
-function Input({ name, type }) {
+function Input({ name, type, state, dispatch }) {
   const [value, setValue] = useState("");
   const [showPass, setShowPass] = useState(false);
+
+  const handleInput = (e) => {
+    dispatch({ type: "SET_VALUE", name: e.target.name, value: e.target.value });
+  };
 
   const themeColors = useContext(ThemeContext);
   return (
@@ -62,18 +66,20 @@ function Input({ name, type }) {
       {type === "text" ? (
         <StyledInput
           type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={state}
+          onChange={handleInput}
           placeholder={name}
           themeColors={themeColors}
+          name="name"
         />
       ) : (
         <StyledInput
           type={showPass ? "text" : "password"}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={state}
+          onChange={handleInput}
           placeholder={name}
           themeColors={themeColors}
+          name="password"
         />
       )}
       {type === "password" && (

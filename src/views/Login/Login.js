@@ -1,11 +1,14 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
 
 import { ThemeContext } from "context/context";
 import Input from "components/Input";
 import Button from "components/Button";
 import Auth from "Functions/Auth";
+
+import { reducerForm } from "reducers/reducerForm";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -23,10 +26,12 @@ const ContentWrapper = styled.div`
   padding: 20px;
 `;
 
-const WrapperInput = styled.div``;
-
 function Login() {
   const [viewH, setViewH] = useState(0);
+  const [state, dispatch] = useReducer(reducerForm, {
+    name: "",
+    password: "",
+  });
 
   const themeColors = useContext(ThemeContext);
 
@@ -37,17 +42,40 @@ function Login() {
     setViewH(vh);
   }, []);
 
-  const handleButtonLogin = () => {
-    Auth.login(() => history.push("/"));
+  useEffect(() => {
+    console.log(state);
+  });
+
+  const handleLoginButton = () => {
+    axios.defaults.withCredentials = true;
+    axios
+      .post("http://localhost:5000/api/user/login", state)
+      .then(function (response) {
+        console.log(response);
+        Auth.login(() => history.push("/"));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
     <Wrapper viewH={viewH} themeColors={themeColors}>
       <ContentWrapper themeColors={themeColors}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <Input name="Nazwa użytkownika" type="text" />
-          <Input name="Hasło" type="password" />
-          <Button onClick={handleButtonLogin}>Zaloguj</Button>
+          <Input
+            dispatch={dispatch}
+            state={state.name}
+            name="Nazwa użytkownika"
+            type="text"
+          />
+          <Input
+            dispatch={dispatch}
+            state={state.password}
+            name="Hasło"
+            type="password"
+          />
+          <Button onClick={handleLoginButton}>Zaloguj</Button>
         </form>
 
         {/* 
@@ -59,9 +87,9 @@ function Login() {
           Nie pamiętasz hasła?
         </a> */}
 
-        <a href="#" style={{ color: "white", display: "flex" }}>
+        {/* <a href="#" style={{ color: "white", display: "flex" }}>
           Nie masz konta? Zarejestruj się!
-        </a>
+        </a> */}
       </ContentWrapper>
     </Wrapper>
   );

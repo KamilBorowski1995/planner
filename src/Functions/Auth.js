@@ -3,12 +3,6 @@ class Auth {
     this.authenticated = false;
   }
 
-  setLogin() {
-    if (sessionStorage.getItem("auth")) {
-      this.authenticated = true;
-    }
-  }
-
   login(cb) {
     this.authenticated = true;
     cb();

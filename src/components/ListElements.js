@@ -35,7 +35,7 @@ const StyledWrapperTitleAndButtons = styled.div`
 
 const StyledElementTitle = styled.p`
   font-size: ${theme.size.s};
-  color: ${({ themeColors }) => themeColors.tertiary};
+  color: ${({ themeColors }) => themeColors.secondary};
 `;
 
 const StyledButtonsList = styled.div`
@@ -52,6 +52,7 @@ const StyledSvgTrash = styled(IconTrash)`
 
   :hover {
     transform: scale(1.05);
+    fill: ${({ themecolors }) => themecolors.secondary};
   }
 `;
 

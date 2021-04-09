@@ -54,6 +54,12 @@ const StyledButton = styled.button`
   color: ${({ themeColors }) => themeColors.tertiary};
   font-size: ${theme.size.xl};
   border: none;
+
+  transition: 0.3s ease-in-out;
+
+  :hover {
+    color: ${({ themeColors }) => themeColors.secondary};
+  }
 `;
 
 function List() {
