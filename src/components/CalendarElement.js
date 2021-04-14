@@ -41,20 +41,21 @@ const StyledTaskName = styled.p`
   border-radius: 5px;
 `;
 
-function CalendarElement({ dataBase }) {
+function CalendarElement({ dataBase, handleButtonEdit }) {
   const themeColors = useContext(ThemeContext);
 
   function getDayWeek(date) {
-    const days = ["PN", "WT", "ŚR", "CZ", "PT", "SB", "ND"];
+    const days = ["ND", "PN", "WT", "ŚR", "CZ", "PT", "SB"];
     const getDate = new Date(date).getDay();
+
     return days[getDate];
   }
   function getDayMonth(date) {
     const getDate = new Date(date).getDate();
     return getDate;
   }
-  const MapElements = dataBase.elements.map(({ id, title, date }) => (
-    <WrapperElementCalendar key={id}>
+  const MapElements = dataBase.map(({ id, note, date }) => (
+    <WrapperElementCalendar key={id} onClick={(e) => handleButtonEdit(e, id)}>
       <WrapperDate>
         <StyledElementDayWeek themeColors={themeColors}>
           {getDayWeek(date)}
@@ -63,7 +64,7 @@ function CalendarElement({ dataBase }) {
           {getDayMonth(date)}
         </StyledElementDay>
       </WrapperDate>
-      <StyledTaskName themeColors={themeColors}>{title}</StyledTaskName>
+      <StyledTaskName themeColors={themeColors}>{note}</StyledTaskName>
     </WrapperElementCalendar>
   ));
 

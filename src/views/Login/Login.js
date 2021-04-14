@@ -52,7 +52,6 @@ function Login() {
       })
       .catch(function (error, res) {
         console.log(error);
-        console.log(res);
       });
   };
 

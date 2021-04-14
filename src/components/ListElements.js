@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
@@ -13,16 +14,9 @@ const Wrapper = styled.div`
 
 const StyledElement = styled.div`
   display: grid;
-  grid-template-columns: 7% 1fr;
+  grid-template-columns: 1fr;
   align-items: center;
   padding-bottom: 10px;
-`;
-
-const StyledColorList = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: ${({ color }) => color};
 `;
 
 const StyledWrapperTitleAndButtons = styled.div`
@@ -57,24 +51,37 @@ const StyledSvgTrash = styled(IconTrash)`
 `;
 
 function ListElements({ dataBase }) {
+  const [notes, setNotes] = useState([]);
   const themeColors = useContext(ThemeContext);
 
-  const getDate = (time) => {
-    const date = new Date(time);
-    const getDates = date.toDateString();
-    return getDates;
+  useEffect(() => {
+    setNotes(dataBase);
+  }, [dataBase]);
+
+  const deleteNote = (e, id) => {
+    console.log(`klikam w notetkę i mam id: ${id}`);
+
+    axios
+      .delete(process.env.REACT_APP_DELETE_NOTE_PATH, { data: { id } })
+      .then(function (response) {
+        setNotes(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
-  const MapElementsList = dataBase.elements.map(({ id, title, color }) => (
+  const MapElementsList = notes.map(({ id, note }) => (
     <StyledElement key={id}>
-      <StyledColorList color={color}></StyledColorList>
-
       <StyledWrapperTitleAndButtons themeColors={themeColors}>
         <StyledElementTitle themeColors={themeColors}>
-          {title}
+          {note}
         </StyledElementTitle>
         <StyledButtonsList>
-          <StyledSvgTrash themecolors={themeColors} />
+          <StyledSvgTrash
+            themecolors={themeColors}
+            onClick={(e) => deleteNote(e, id)}
+          />
         </StyledButtonsList>
       </StyledWrapperTitleAndButtons>
     </StyledElement>

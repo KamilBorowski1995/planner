@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
@@ -9,8 +9,9 @@ import { theme } from "theme/theme";
 
 import ListElements from "components/ListElements";
 
-import { dataBase } from "database";
 import Auth from "Functions/Auth";
+import AddTask from "components/AddTask";
+import { reducerInput } from "reducers/reducerInput";
 
 const WrapperElements = styled.div`
   max-height: ${({ size }) => `${size}px`};
@@ -35,11 +36,6 @@ const WrapperAddTask = styled.div`
   font-family: ${theme.font.secondary};
 
   margin-bottom: 30px;
-`;
-const WrapperInput = styled.div`
-  border: 1px solid ${({ themeColors }) => themeColors.tertiary};
-  border-radius: 10px;
-  padding: 0 15px;
 `;
 
 const StyledInput = styled.input`
@@ -78,67 +74,55 @@ const StyledButton = styled.button`
   }
 `;
 
-const StyledInputDate = styled(StyledInput)`
-  width: max-content;
-  ::-webkit-calendar-picker-indicator {
-    opacity: 1;
-    font-size: 20px;
-  }
-`;
-
 function List() {
   const [heightWrapperNav, setHeightWrapperNav] = useState(50);
   const [size, setSize] = useState(150);
-  const [inputValue, setInputValue] = useState("");
-  const [inputDateValue, setInputDateValue] = useState("");
 
-  const [activeAddPanel, setActiveAddPanel] = useState(false);
+  const [allNotes, setAllNotes] = useState([]);
 
-  const inputDateRef = useRef(null);
+  const [state, dispatch] = useReducer(reducerInput, {
+    text: "",
+    date: "",
+  });
 
   const themeColors = useContext(ThemeContext);
-
   const history = useHistory();
 
   useEffect(() => {
     const heightSite = document.body.clientHeight;
-    setSize(heightSite - heightWrapperNav);
+    setSize(heightSite - heightWrapperNav - 50);
   }, [size, heightWrapperNav]);
 
-  function setDate() {
-    const date = new Date();
-
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-    if (month < 10) {
-      month = "0" + month;
-    }
-    if (day < 10) {
-      day = "0" + day;
-    }
-
-    const today = year + "-" + month + "-" + day;
-    if (inputDateRef.current) {
-      inputDateRef.current.value = today;
-      setInputDateValue(inputDateRef.current.value);
-    }
+  function getNotes() {
+    axios.defaults.withCredentials = true;
+    axios
+      .get(process.env.REACT_APP_GET_NOTE_PATH)
+      .then(function (response) {
+        setAllNotes(response.data);
+      })
+      .catch(function (error) {
+        if (error.response.data === "UserErr") {
+          Auth.logout(() => {
+            history.push("/login");
+          });
+        }
+      });
   }
 
   useEffect(() => {
-    setDate();
-  }, [activeAddPanel]);
+    getNotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setHeight = (height) => setHeightWrapperNav(height);
 
   const handleSendTaksButton = (e) => {
-    const dateYear = inputDateValue.substr(0, 4);
-    const dateMonth = inputDateValue.substr(5, 2);
-    const dateDay = inputDateValue.substr(-2);
+    const dateYear = state.date.substr(0, 4);
+    const dateMonth = state.date.substr(5, 2);
+    const dateDay = state.date.substr(-2);
 
     const newTask = {
-      note: inputValue,
+      note: state.text,
       date: [dateYear, dateMonth, dateDay],
     };
 
@@ -146,51 +130,32 @@ function List() {
     axios
       .post(process.env.REACT_APP_ADD_NOTE_PATH, newTask)
       .then(function (response) {
-        console.log(response);
-
-        setInputValue("");
-        setActiveAddPanel(false);
+        dispatch({ type: "SET_VALUE", name: "text", value: "" });
+        getNotes();
       })
       .catch(function (error) {
         if (error.response.data === "UserErr") {
-          console.log("Mamy błąd więc");
           Auth.logout(() => {
-            console.log("Wykonam?");
             history.push("/login");
           });
         }
       });
   };
 
+  const handleDispatch = (e) => {
+    dispatch({ type: "SET_VALUE", name: e.target.type, value: e.target.value });
+  };
+
   return (
     <MobileTemplate setHeight={setHeight}>
       <WrapperElements size={size}>
-        <StyledTitle themeColors={themeColors}>{dataBase.name}</StyledTitle>
-
+        <StyledTitle themeColors={themeColors}>Zadania</StyledTitle>
         <WrapperAddTask>
-          <WrapperInput
-            themeColors={themeColors}
-            onClick={() => setActiveAddPanel(true)}
-          >
-            <StyledInput
-              themeColors={themeColors}
-              activeAddPanel={activeAddPanel}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Dodaj nowe zadanie..."
-            />
-            {activeAddPanel && (
-              <StyledInputDate
-                ref={inputDateRef}
-                min="2021-04-01"
-                type="date"
-                value={inputDateValue}
-                themeColors={themeColors}
-                onChange={(e) => setInputDateValue(e.target.value)}
-              />
-            )}
-          </WrapperInput>
+          <AddTask
+            dispatch={dispatch}
+            handleDispatch={handleDispatch}
+            state={state}
+          />
           <StyledButton
             onClick={handleSendTaksButton}
             themeColors={themeColors}
@@ -199,7 +164,7 @@ function List() {
           </StyledButton>
         </WrapperAddTask>
 
-        <ListElements dataBase={dataBase} />
+        {allNotes.length > 0 && <ListElements dataBase={allNotes} />}
       </WrapperElements>
     </MobileTemplate>
   );
