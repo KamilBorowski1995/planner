@@ -67,7 +67,8 @@ function Calendar() {
   }
 
   useEffect(() => {
-    const handler = handleSelectNotes(allNotes, selectDateState);
+    const handler = handleSelectNotes(allNotes, currentDate);
+
     setSelectNotes(handler);
 
     function setMonthFromNotes() {
@@ -82,10 +83,17 @@ function Calendar() {
 
   useEffect(() => {
     const currentData = new Date();
-    const currentMonth = currentData.getMonth();
+    const currentMonth = currentData.getMonth() + 1;
     const currentYear = currentData.getFullYear();
 
-    setCurrentDate([currentYear, currentMonth]);
+    function editMonth(month) {
+      if (month > 9) return `${month}`;
+      if (month < 10) return `0${month}`;
+    }
+
+    const correctMonth = editMonth(currentMonth);
+
+    setCurrentDate([currentYear, correctMonth]);
     getNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -107,7 +115,10 @@ function Calendar() {
   };
 
   const OptionsMap = allMonth.map(({ year, month }) => (
-    <option value={year + month}>
+    <option
+      value={year + month}
+      selected={currentDate[0] + currentDate[1] === year + month ? true : false}
+    >
       {getYearAndMonth(year, month, currentDate)}
     </option>
   ));
@@ -120,7 +131,6 @@ function Calendar() {
 
     const newDateArr = [year, month];
     const handler = handleSelectNotes(allNotes, newDateArr);
-    // console.log(handler);
     setSelectNotes(handler);
   };
 

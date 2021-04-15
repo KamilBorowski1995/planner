@@ -13,7 +13,21 @@ export function selectDate(propsArray) {
     }
   }
 
-  return newArray;
+  function compareYear(a, b) {
+    if (a.year * 1 < b.year * 1) return -1;
+    if (a.year * 1 > b.year * 1) return 1;
+    return 0;
+  }
+  function compareMonth(a, b) {
+    if (a.month * 1 < b.month * 1) return -1;
+    if (a.month * 1 > b.month * 1) return 1;
+    return 0;
+  }
+
+  const sortArrayMonth = newArray.sort(compareMonth);
+  const sortArrayYear = sortArrayMonth.sort(compareYear);
+
+  return sortArrayYear;
 }
 
 export function getMonth(date) {
@@ -35,9 +49,8 @@ export function getMonth(date) {
 }
 
 export function handleSelectNotes(notes, date) {
-  console.log(date);
   const newArray = notes.filter((el) => {
-    return el.date[0] * 1 === date[0] && el.date[1] * 1 === date[1];
+    return el.date[0] * 1 === date[0] && el.date[1] * 1 === date[1] * 1;
   });
 
   return newArray;
