@@ -55,7 +55,12 @@ function CalendarElement({ dataBase, handleButtonEdit }) {
     return getDate;
   }
   const MapElements = dataBase.map(({ id, note, date }) => (
-    <WrapperElementCalendar key={id} onClick={(e) => handleButtonEdit(e, id)}>
+    <WrapperElementCalendar
+      key={id}
+      onClick={(e) => {
+        handleButtonEdit(e, id);
+      }}
+    >
       <WrapperDate>
         <StyledElementDayWeek themeColors={themeColors}>
           {getDayWeek(date)}

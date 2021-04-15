@@ -12,6 +12,13 @@ import CalendarElement from "components/CalendarElement";
 import Auth from "Functions/Auth";
 import EditNote from "views/EditNote";
 
+import {
+  selectDate,
+  getMonth,
+  handleSelectNotes,
+  getYearAndMonth,
+} from "Functions/functionCalendar";
+
 const Wrapper = styled.div`
   max-height: ${({ size }) => `${size}px`};
 
@@ -32,17 +39,16 @@ function Calendar() {
   const [heightWrapperNav, setHeightWrapperNav] = useState(50);
   const [size, setSize] = useState(150);
   const [allNotes, setAllNotes] = useState([]);
+  const [selectNotes, setSelectNotes] = useState([]);
+  const [allMonth, setAllMonth] = useState([]);
+
+  const [currentDate, setCurrentDate] = useState([]);
+  const [selectDateState, setSelectDateState] = useState([]);
 
   const [activeNote, setActiveNote] = useState("");
 
   const themeColors = useContext(ThemeContext);
-
   const history = useHistory();
-
-  useEffect(() => {
-    const heightSite = document.body.clientHeight;
-    setSize(heightSite - heightWrapperNav);
-  }, [size, heightWrapperNav]);
 
   function getNotes() {
     axios.defaults.withCredentials = true;
@@ -61,9 +67,33 @@ function Calendar() {
   }
 
   useEffect(() => {
+    const handler = handleSelectNotes(allNotes, selectDateState);
+    setSelectNotes(handler);
+
+    function setMonthFromNotes() {
+      const arrDate = selectDate(allNotes);
+      setAllMonth(arrDate);
+    }
+
+    setMonthFromNotes();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allNotes]);
+
+  useEffect(() => {
+    const currentData = new Date();
+    const currentMonth = currentData.getMonth();
+    const currentYear = currentData.getFullYear();
+
+    setCurrentDate([currentYear, currentMonth]);
     getNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const heightSite = document.body.clientHeight;
+    setSize(heightSite - heightWrapperNav);
+  }, [size, heightWrapperNav]);
 
   const setHeight = (height) => setHeightWrapperNav(height);
 
@@ -73,6 +103,25 @@ function Calendar() {
 
   const handleButtonClose = () => {
     setActiveNote("");
+    getNotes();
+  };
+
+  const OptionsMap = allMonth.map(({ year, month }) => (
+    <option value={year + month}>
+      {getYearAndMonth(year, month, currentDate)}
+    </option>
+  ));
+
+  const handleSelectDate = (e) => {
+    const year = e.target.value.slice(0, 4) * 1;
+    const month = e.target.value.slice(4) * 1;
+
+    setSelectDateState([year, month]);
+
+    const newDateArr = [year, month];
+    const handler = handleSelectNotes(allNotes, newDateArr);
+    // console.log(handler);
+    setSelectNotes(handler);
   };
 
   return (
@@ -83,13 +132,19 @@ function Calendar() {
             size={size}
             id={activeNote}
             handleButtonClose={handleButtonClose}
+            handleButtonEdit={handleButtonEdit}
           />
         ) : (
           <>
-            <StyledTitle themeColors={themeColors}>Marzec</StyledTitle>
-            {allNotes.length > 0 && (
+            <StyledTitle themeColors={themeColors}>
+              {getMonth(currentDate[1])}
+            </StyledTitle>
+            <select name="date" id="date" onChange={handleSelectDate}>
+              {OptionsMap}
+            </select>
+            {selectNotes.length > 0 && (
               <CalendarElement
-                dataBase={allNotes}
+                dataBase={selectNotes}
                 handleButtonEdit={handleButtonEdit}
               />
             )}

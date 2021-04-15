@@ -96,6 +96,8 @@ const StyledInputDate = styled.input`
 `;
 
 const Loader = styled.div`
+  margin: 20% auto 0;
+
   width: 100px;
   height: 100px;
 
@@ -142,7 +144,6 @@ const EditNote = ({ size, id, handleButtonClose }) => {
           `${response.data.date[0]}-${response.data.date[1]}-${response.data.date[2]}`
         );
         setLoaded(true);
-        // dispatch({ type: "SET_VALUE", name: e.target.type, value: e.target.value });
       })
       .catch(function (error) {
         console.log(error);
@@ -170,11 +171,13 @@ const EditNote = ({ size, id, handleButtonClose }) => {
       .post(process.env.REACT_APP_EDIT_NOTE_PATH, newTask)
       .then(function (response) {
         console.log(response);
+        handleButtonClose();
       })
       .catch(function (error) {
         console.log(error);
       });
   };
+
   return (
     <Wrapper size={size} themeColors={themeColors}>
       {loaded === true ? (
