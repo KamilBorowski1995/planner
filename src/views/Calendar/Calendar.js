@@ -12,9 +12,10 @@ import CalendarElement from "components/CalendarElement";
 import Auth from "Functions/Auth";
 import EditNote from "views/EditNote";
 
+import Loader from "components/Loader";
+
 import {
   selectDate,
-  getMonth,
   handleSelectNotes,
   getYearAndMonth,
 } from "Functions/functionCalendar";
@@ -28,11 +29,12 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const StyledTitle = styled.h2`
-  margin-bottom: 20px;
+const StyledTitle = styled.h3`
+  margin-top: 40px;
   color: ${({ themeColors }) => themeColors.secondary};
-  font-size: ${theme.size.xl};
+  font-size: ${theme.size.l};
   font-weight: 500;
+  text-align: center;
 `;
 const StyledSelect = styled.select`
   margin-bottom: 20px;
@@ -65,21 +67,26 @@ function Calendar() {
 
   const [activeNote, setActiveNote] = useState("");
 
+  const [loaded, setLoaded] = useState(true);
+
   const themeColors = useContext(ThemeContext);
   const history = useHistory();
 
   function getNotes() {
+    setLoaded(false);
     axios.defaults.withCredentials = true;
     axios
       .get(process.env.REACT_APP_GET_NOTE_PATH)
       .then(function (response) {
         setAllNotes(response.data);
+        setLoaded(true);
       })
       .catch(function (error) {
         if (error.response.data === "UserErr") {
           Auth.logout(() => {
             history.push("/login");
           });
+          setLoaded(true);
         }
       });
   }
@@ -155,33 +162,44 @@ function Calendar() {
 
   return (
     <MobileTemplate setHeight={setHeight}>
-      <Wrapper size={size}>
-        {activeNote !== "" ? (
-          <EditNote
-            size={size}
-            id={activeNote}
-            handleButtonClose={handleButtonClose}
-            handleButtonEdit={handleButtonEdit}
-          />
-        ) : (
-          <>
-            <StyledSelect
-              themeColors={themeColors}
-              name="date"
-              id="date"
-              onChange={handleSelectDate}
-            >
-              {OptionsMap}
-            </StyledSelect>
-            {selectNotes.length > 0 && (
-              <CalendarElement
-                dataBase={selectNotes}
-                handleButtonEdit={handleButtonEdit}
-              />
-            )}
-          </>
-        )}
-      </Wrapper>
+      {loaded === false && <Loader />}
+      {loaded && (
+        <Wrapper size={size}>
+          {allMonth.length > 0 ? (
+            <>
+              {activeNote !== "" ? (
+                <EditNote
+                  size={size}
+                  id={activeNote}
+                  handleButtonClose={handleButtonClose}
+                  handleButtonEdit={handleButtonEdit}
+                />
+              ) : (
+                <>
+                  <StyledSelect
+                    themeColors={themeColors}
+                    name="date"
+                    id="date"
+                    onChange={handleSelectDate}
+                  >
+                    {OptionsMap}
+                  </StyledSelect>
+                  {selectNotes.length > 0 && (
+                    <CalendarElement
+                      dataBase={selectNotes}
+                      handleButtonEdit={handleButtonEdit}
+                    />
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            <StyledTitle themeColors={themeColors}>
+              Brak zaplanowanych zadań
+            </StyledTitle>
+          )}
+        </Wrapper>
+      )}
     </MobileTemplate>
   );
 }

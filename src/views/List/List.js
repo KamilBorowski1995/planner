@@ -12,6 +12,7 @@ import ListElements from "components/ListElements";
 import Auth from "Functions/Auth";
 import AddTask from "components/AddTask";
 import { reducerInput } from "reducers/reducerInput";
+import Loader from "components/Loader";
 
 const WrapperElements = styled.div`
   max-height: ${({ size }) => `${size}px`};
@@ -38,29 +39,6 @@ const WrapperAddTask = styled.div`
   margin-bottom: 30px;
 `;
 
-const StyledInput = styled.input`
-  width: 100%;
-  padding: 10px 0;
-  border: none;
-
-  border-bottom: ${({ activeAddPanel, themeColors }) =>
-    activeAddPanel === true
-      ? `1px solid ${themeColors.tertiary}`
-      : `1px solid transparent`};
-
-  background-color: transparent;
-  color: ${theme.colors.dark.secondary};
-  font-size: ${theme.size.m};
-  transition: 0.3s ease-in-out;
-
-  ::placeholder {
-    font-family: ${({ themeColors }) => themeColors.secondary};
-    letter-spacing: 1px;
-    color: ${({ themeColors }) => themeColors.tertiary};
-    font-size: ${theme.size.s};
-  }
-`;
-
 const StyledButton = styled.button`
   background-color: transparent;
   color: ${({ themeColors }) => themeColors.tertiary};
@@ -74,9 +52,18 @@ const StyledButton = styled.button`
   }
 `;
 
+const ErrorInfo = styled.p`
+  margin: 10px 0 30px;
+  color: ${({ themeColors }) => themeColors.secondary};
+  font-size: ${theme.size.m};
+  font-weight: 500;
+  text-align: center;
+`;
+
 function List() {
   const [heightWrapperNav, setHeightWrapperNav] = useState(50);
   const [size, setSize] = useState(150);
+  const [loaded, setLoaded] = useState(true);
 
   const [allNotes, setAllNotes] = useState([]);
 
@@ -94,13 +81,17 @@ function List() {
   }, [size, heightWrapperNav]);
 
   function getNotes() {
+    setLoaded(false);
     axios.defaults.withCredentials = true;
     axios
       .get(process.env.REACT_APP_GET_NOTE_PATH)
       .then(function (response) {
         setAllNotes(response.data);
+        setLoaded(true);
       })
       .catch(function (error) {
+        setLoaded(true);
+
         if (error.response.data === "UserErr") {
           Auth.logout(() => {
             history.push("/login");
@@ -117,6 +108,7 @@ function List() {
   const setHeight = (height) => setHeightWrapperNav(height);
 
   const handleSendTaksButton = (e) => {
+    setLoaded(false);
     const dateYear = state.date.substr(0, 4);
     const dateMonth = state.date.substr(5, 2);
     const dateDay = state.date.substr(-2);
@@ -131,6 +123,7 @@ function List() {
       .post(process.env.REACT_APP_ADD_NOTE_PATH, newTask)
       .then(function (response) {
         dispatch({ type: "SET_VALUE", name: "text", value: "" });
+        setLoaded(true);
         getNotes();
       })
       .catch(function (error) {
@@ -138,6 +131,7 @@ function List() {
           Auth.logout(() => {
             history.push("/login");
           });
+          setLoaded(true);
         }
       });
   };
@@ -164,7 +158,12 @@ function List() {
           </StyledButton>
         </WrapperAddTask>
 
-        {allNotes.length > 0 && <ListElements dataBase={allNotes} />}
+        {loaded === false && <Loader />}
+        {allNotes.length > 0 ? (
+          <ListElements dataBase={allNotes} />
+        ) : (
+          <ErrorInfo themeColors={themeColors}>Brak zadań</ErrorInfo>
+        )}
       </WrapperElements>
     </MobileTemplate>
   );

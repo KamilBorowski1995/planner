@@ -4,17 +4,13 @@ import axios from "axios";
 
 import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
+import Loader from "components/Loader";
 
 const AnimationOpen = (size) => keyframes`
 from {  height: 0}
 /* 50% { height: ${size * 0.7}px}
 70% { height: ${size * 0.9}px} */
 to { height: ${size}px}
-`;
-
-const AnimationLoader = (size) => keyframes`
-from {  transform:rotate(0)}
- to { transform:rotate(360deg)}
 `;
 
 const Wrapper = styled.div`
@@ -93,21 +89,6 @@ const StyledInputDate = styled.input`
     opacity: 1;
     font-size: 20px;
   }
-`;
-
-const Loader = styled.div`
-  margin: 20% auto 0;
-
-  width: 100px;
-  height: 100px;
-
-  border-radius: 50%;
-  border-right: 10px solid ${({ themeColors }) => themeColors.secondary};
-  border-left: 10px solid ${({ themeColors }) => themeColors.secondary};
-  border-top: 10px solid ${({ themeColors }) => themeColors.tertiary};
-  border-bottom: 10px solid ${({ themeColors }) => themeColors.tertiary};
-
-  animation: ${AnimationLoader} 1.5s ease-in-out infinite;
 `;
 
 const EditNote = ({ size, id, handleButtonClose }) => {

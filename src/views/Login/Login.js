@@ -8,13 +8,15 @@ import Input from "components/Input";
 import Button from "components/Button";
 import Auth from "Functions/Auth";
 
+import Loader from "components/Loader";
+
 import { reducerForm } from "reducers/reducerForm";
 import { theme } from "theme/theme";
 
 const Wrapper = styled.div`
-  width: 100vw;
+  /* width: ${({ isDesktop }) => (isDesktop ? `400px` : "100vw")}; */
   height: ${({ viewH }) => `${viewH * 100}px`};
-
+  width: 100%;
   background-color: ${({ themeColors }) => themeColors.primary};
   color: ${({ themeColors }) => themeColors.secondary};
   position: relative;
@@ -32,10 +34,6 @@ const ContentWrapper = styled.div`
   top: 15px;
   left: 15px;
 
-  /* display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: max-content max-content max-content; */
-
   display: flex;
   flex-direction: column;
 
@@ -45,26 +43,32 @@ const ContentWrapper = styled.div`
   transform: ${({ activePage }) =>
     activePage === "login"
       ? "translateX(0)"
-      : "translateX(calc(-100% - 15px))"};
+      : "translateX(calc(-105% - 15px))"};
 `;
 
 const ContentRegisterWrapper = styled(ContentWrapper)`
   transform: ${({ activePage }) =>
     activePage === "register"
       ? "translateX(0%)"
-      : "translateX(calc(100% + 15px))"};
+      : "translateX(calc(105% + 15px))"};
 `;
 
 const Title = styled.h3`
-  margin: 20% 0 20%;
+  margin: 10vh 0 0;
   color: ${({ themeColors }) => themeColors.secondary};
   font-size: ${theme.size.xl};
   font-weight: 500;
 `;
+const ErrorInfo = styled.p`
+  margin: 10px 0 30px;
+  color: ${({ themeColors }) => themeColors.secondary};
+  font-size: ${theme.size.m};
+  font-weight: 500;
+`;
 
 const Form = styled.form`
-  margin: 10% 0 10%;
-  height: 30%;
+  margin: 10vh 0 0;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -83,6 +87,9 @@ function Login() {
     password: "",
   });
 
+  const [loaded, setLoaded] = useState(true);
+  const [errorText, setErrorText] = useState("");
+
   const [activePage, setActivePage] = useState("login");
 
   const themeColors = useContext(ThemeContext);
@@ -92,20 +99,24 @@ function Login() {
   useEffect(() => {
     let vh = window.innerHeight * 0.01;
     setViewH(vh);
-
-    console.log(vh);
   }, []);
 
   const handleLoginButton = () => {
+    setErrorText("");
+    setLoaded(false);
+    dispatch({ type: "SET_VALUE", name: "name", value: "" });
+    dispatch({ type: "SET_VALUE", name: "password", value: "" });
     axios.defaults.withCredentials = true;
     axios
       .post(process.env.REACT_APP_LOGIN_PATH, state)
       .then(function (response) {
+        setLoaded(true);
         console.log(response);
         Auth.login(() => history.push("/"));
       })
       .catch(function (error, res) {
-        console.log(error);
+        setLoaded(true);
+        setErrorText(error.response.data);
       });
   };
 
@@ -120,68 +131,62 @@ function Login() {
 
   return (
     <Wrapper viewH={viewH} themeColors={themeColors}>
-      <ContentWrapper themeColors={themeColors} activePage={activePage}>
-        <Title themeColors={themeColors}>Zaloguj się</Title>
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <Input
-            dispatch={dispatch}
-            state={state.name}
-            name="Nazwa użytkownika"
-            type="text"
-          />
-          <Input
-            dispatch={dispatch}
-            state={state.password}
-            name="Hasło"
-            type="password"
-          />
-          <Button onClick={handleLoginButton}>Zaloguj</Button>
-        </Form>
+      {loaded ? (
+        <>
+          <ContentWrapper themeColors={themeColors} activePage={activePage}>
+            <Title themeColors={themeColors}>Zaloguj się</Title>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <Input
+                dispatch={dispatch}
+                state={state.name}
+                name="Nazwa użytkownika"
+                type="text"
+              />
+              <Input
+                dispatch={dispatch}
+                state={state.password}
+                name="Hasło"
+                type="password"
+              />
+              <Button onClick={handleLoginButton}>Zaloguj</Button>
+            </Form>
+            {errorText !== "" && (
+              <ErrorInfo themeColors={themeColors}>{errorText}</ErrorInfo>
+            )}
 
-        {/* 
-        ------------------------
-        ## Funkcja do dodania ## 
-        ------------------------
+            <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
+              Nie masz konta? Zarejestruj się!
+            </StyledButton>
+          </ContentWrapper>
+          <ContentRegisterWrapper
+            themeColors={themeColors}
+            activePage={activePage}
+          >
+            <Title themeColors={themeColors}>Zarejestruj się</Title>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <Input
+                dispatch={dispatch}
+                state={state.name}
+                name="Nazwa użytkownika"
+                type="text"
+              />
+              <Input
+                dispatch={dispatch}
+                state={state.password}
+                name="Hasło"
+                type="password"
+              />
+              <Button onClick={handleLoginButton}>Zaloguj</Button>
+            </Form>
 
-        <a href="#" style={{ color: "white", display: "flex" }}>
-          Nie pamiętasz hasła?
-        </a> */}
-
-        <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
-          Nie masz konta? Zarejestruj się!
-        </StyledButton>
-      </ContentWrapper>
-      <ContentRegisterWrapper themeColors={themeColors} activePage={activePage}>
-        <Title themeColors={themeColors}>Zarejestruj się</Title>
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <Input
-            dispatch={dispatch}
-            state={state.name}
-            name="Nazwa użytkownika"
-            type="text"
-          />
-          <Input
-            dispatch={dispatch}
-            state={state.password}
-            name="Hasło"
-            type="password"
-          />
-          <Button onClick={handleLoginButton}>Zaloguj</Button>
-        </Form>
-
-        {/* 
-        ------------------------
-        ## Funkcja do dodania ## 
-        ------------------------
-
-        <a href="#" style={{ color: "white", display: "flex" }}>
-          Nie pamiętasz hasła?
-        </a> */}
-
-        <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
-          Masz konto? Zaloguj się!
-        </StyledButton>
-      </ContentRegisterWrapper>
+            <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
+              Masz konto? Zaloguj się!
+            </StyledButton>
+          </ContentRegisterWrapper>
+        </>
+      ) : (
+        <Loader />
+      )}
     </Wrapper>
   );
 }

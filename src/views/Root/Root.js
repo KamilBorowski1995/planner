@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
 import { theme } from "theme/theme";
@@ -11,6 +12,10 @@ import Login from "views/Login";
 
 import "./Root.css";
 import ProtectedRoute from "Functions/ProtectedRoute";
+
+const AppWrapper = styled.div`
+  background-color: ${({ themeColors }) => themeColors.primary};
+`;
 
 // ------------------------------------------------------ //
 // ###################################################### //
@@ -30,14 +35,14 @@ function Root() {
   return (
     <BrowserRouter>
       <ThemeContext.Provider value={themeColors}>
-        <div className="App">
+        <AppWrapper themeColors={themeColors}>
           <Switch>
             <ProtectedRoute exact path="/" component={List} />
             <ProtectedRoute exact path="/calendar" component={Calendar} />
 
             <Route path="/login" component={Login} />
           </Switch>
-        </div>
+        </AppWrapper>
       </ThemeContext.Provider>
     </BrowserRouter>
   );

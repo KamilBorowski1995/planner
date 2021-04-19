@@ -59,8 +59,6 @@ function ListElements({ dataBase }) {
   }, [dataBase]);
 
   const deleteNote = (e, id) => {
-    console.log(`klikam w notetkę i mam id: ${id}`);
-
     axios
       .delete(process.env.REACT_APP_DELETE_NOTE_PATH, { data: { id } })
       .then(function (response) {

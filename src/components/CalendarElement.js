@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { ThemeContext } from "context/context";
@@ -43,6 +43,7 @@ const StyledTaskName = styled.p`
 
 function CalendarElement({ dataBase, handleButtonEdit }) {
   const themeColors = useContext(ThemeContext);
+  const [dateDB, setDateDB] = useState([]);
 
   function getDayWeek(date) {
     const days = ["ND", "PN", "WT", "ŚR", "CZ", "PT", "SB"];
@@ -54,7 +55,22 @@ function CalendarElement({ dataBase, handleButtonEdit }) {
     const getDate = new Date(date).getDate();
     return getDate;
   }
-  const MapElements = dataBase.map(({ id, note, date }) => (
+
+  function sortDate(db) {
+    function compareDay(a, b) {
+      if (a.date[2] * 1 < b.date[2] * 1) return -1;
+      if (a.date[2] * 1 > b.date[2] * 1) return 1;
+      return 0;
+    }
+
+    const sortArrayDay = db.sort(compareDay);
+    setDateDB(sortArrayDay);
+  }
+
+  useEffect(() => {
+    sortDate(dataBase);
+  }, [dataBase]);
+  const MapElements = dateDB.map(({ id, note, date }) => (
     <WrapperElementCalendar
       key={id}
       onClick={(e) => {
