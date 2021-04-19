@@ -34,6 +34,24 @@ const StyledTitle = styled.h2`
   font-size: ${theme.size.xl};
   font-weight: 500;
 `;
+const StyledSelect = styled.select`
+  margin-bottom: 20px;
+  background-color: transparent;
+  color: ${({ themeColors }) => themeColors.secondary};
+  font-size: ${theme.size.l};
+  padding: 10px;
+  font-weight: 500;
+
+  border: none;
+
+  border-bottom: 2px solid ${({ themeColors }) => themeColors.secondary};
+
+  option {
+    background-color: ${({ themeColors }) => themeColors.secondary};
+    color: ${({ themeColors }) => themeColors.primary};
+    font-size: ${theme.size.s};
+  }
+`;
 
 function Calendar() {
   const [heightWrapperNav, setHeightWrapperNav] = useState(50);
@@ -43,7 +61,7 @@ function Calendar() {
   const [allMonth, setAllMonth] = useState([]);
 
   const [currentDate, setCurrentDate] = useState([]);
-  const [selectDateState, setSelectDateState] = useState([]);
+  // const [selectDateState, setSelectDateState] = useState([]);
 
   const [activeNote, setActiveNote] = useState("");
 
@@ -116,6 +134,7 @@ function Calendar() {
 
   const OptionsMap = allMonth.map(({ year, month }) => (
     <option
+      themeColors={themeColors}
       value={year + month}
       selected={currentDate[0] + currentDate[1] === year + month ? true : false}
     >
@@ -127,7 +146,7 @@ function Calendar() {
     const year = e.target.value.slice(0, 4) * 1;
     const month = e.target.value.slice(4) * 1;
 
-    setSelectDateState([year, month]);
+    // setSelectDateState([year, month]);
 
     const newDateArr = [year, month];
     const handler = handleSelectNotes(allNotes, newDateArr);
@@ -146,12 +165,14 @@ function Calendar() {
           />
         ) : (
           <>
-            <StyledTitle themeColors={themeColors}>
-              {getMonth(currentDate[1])}
-            </StyledTitle>
-            <select name="date" id="date" onChange={handleSelectDate}>
+            <StyledSelect
+              themeColors={themeColors}
+              name="date"
+              id="date"
+              onChange={handleSelectDate}
+            >
               {OptionsMap}
-            </select>
+            </StyledSelect>
             {selectNotes.length > 0 && (
               <CalendarElement
                 dataBase={selectNotes}

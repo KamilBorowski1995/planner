@@ -23,15 +23,8 @@ import ProtectedRoute from "Functions/ProtectedRoute";
 function Root() {
   const [themeColors, setThemeColors] = useState(theme.colors.dark);
 
-  //Fukcja tymczasowa dla błędu z przeglądarki
   useEffect(() => {
     setThemeColors(theme.colors.dark);
-
-    const dateNow = new Date();
-    const dateString = dateNow.getTime();
-    console.log(dateString);
-    const editDate = new Date(dateString);
-    console.log(editDate);
   }, []);
 
   return (
