@@ -10,6 +10,10 @@ import { ReactComponent as IconTrash } from "assets/svg/icon-trash.svg";
 const Wrapper = styled.div`
   /* max-height: 50vh; */
   overflow: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const StyledElement = styled.div`

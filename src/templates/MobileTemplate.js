@@ -12,6 +12,9 @@ const Wrapper = styled.div`
   height: ${({ viewH }) => `${viewH * 100}px`};
   padding: 15px 15px 5px;
 
+  max-width: 500px;
+  margin: 0 auto;
+
   background-color: ${({ themeColors }) => themeColors.primary};
   color: ${({ themeColors }) => themeColors.secondary};
   display: flex;

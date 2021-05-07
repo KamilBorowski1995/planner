@@ -6,6 +6,9 @@ import { theme } from "theme/theme";
 
 const Wrapper = styled.div`
   overflow: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const WrapperElementCalendar = styled.div`

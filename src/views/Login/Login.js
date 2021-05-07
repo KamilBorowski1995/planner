@@ -16,6 +16,8 @@ import { theme } from "theme/theme";
 const Wrapper = styled.div`
   /* width: ${({ isDesktop }) => (isDesktop ? `400px` : "100vw")}; */
   height: ${({ viewH }) => `${viewH * 100}px`};
+  max-width: 500px;
+  margin: 0 auto;
   width: 100%;
   background-color: ${({ themeColors }) => themeColors.primary};
   color: ${({ themeColors }) => themeColors.secondary};
@@ -107,17 +109,34 @@ function Login() {
     dispatch({ type: "SET_VALUE", name: "name", value: "" });
     dispatch({ type: "SET_VALUE", name: "password", value: "" });
     axios.defaults.withCredentials = true;
-    axios
-      .post(process.env.REACT_APP_LOGIN_PATH, state)
-      .then(function (response) {
-        setLoaded(true);
-        console.log(response);
-        Auth.login(() => history.push("/"));
-      })
-      .catch(function (error, res) {
-        setLoaded(true);
-        setErrorText(error.response.data);
-      });
+
+    if (activePage === "login") {
+      axios
+        .post(process.env.REACT_APP_LOGIN_PATH, state)
+        .then(function (response) {
+          setLoaded(true);
+          console.log(response);
+          Auth.login(() => history.push("/"));
+        })
+        .catch(function (error, res) {
+          setLoaded(true);
+          setErrorText(error.response.data);
+        });
+    }
+    if (activePage === "register") {
+      axios
+        .post(process.env.REACT_APP_REGISTER_PATH, state)
+        .then(function (response) {
+          setLoaded(true);
+          console.log(response);
+          history.push("/");
+          setActivePage("login");
+        })
+        .catch(function (error, res) {
+          setLoaded(true);
+          setErrorText(error.response.data);
+        });
+    }
   };
 
   const hadleActivePage = () => {
@@ -176,7 +195,9 @@ function Login() {
                 name="Hasło"
                 type="password"
               />
-              <Button onClick={handleLoginButton}>Zaloguj</Button>
+              <Button onClick={handleLoginButton}>
+                {activePage === "login" ? "Zaloguj" : "Zarejestruj"}
+              </Button>
             </Form>
 
             <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
