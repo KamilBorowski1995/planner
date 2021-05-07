@@ -1,6 +1,6 @@
 {
-  "name": "planner",
   "homepage": "https://kamilborowski1995.github.io/planner/",
+  "name": "planner",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
