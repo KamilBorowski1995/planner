@@ -17,14 +17,6 @@ const AppWrapper = styled.div`
   background-color: ${({ themeColors }) => themeColors.primary};
 `;
 
-// ------------------------------------------------------ //
-// ###################################################### //
-// ------------------------------------------------------ //
-// Dodać ekrany łądowania poczas zapytań do serwera       //
-// ------------------------------------------------------ //
-// ###################################################### //
-// ------------------------------------------------------ //
-
 function Root() {
   const [themeColors, setThemeColors] = useState(theme.colors.dark);
 
@@ -41,6 +33,8 @@ function Root() {
             <ProtectedRoute exact path="/calendar" component={Calendar} />
 
             <Route path="/login" component={Login} />
+
+            <ProtectedRoute exact path="*" component={List} />
           </Switch>
         </AppWrapper>
       </ThemeContext.Provider>
