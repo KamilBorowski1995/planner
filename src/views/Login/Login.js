@@ -199,7 +199,9 @@ function Login() {
                 {activePage === "login" ? "Zaloguj" : "Zarejestruj"}
               </Button>
             </Form>
-
+            {errorText !== "" && (
+              <ErrorInfo themeColors={themeColors}>{errorText}</ErrorInfo>
+            )}
             <StyledButton themeColors={themeColors} onClick={hadleActivePage}>
               Masz konto? Zaloguj się!
             </StyledButton>
