@@ -64,7 +64,15 @@ function ListElements({ dataBase }) {
 
   const deleteNote = (e, id) => {
     axios
-      .delete(process.env.REACT_APP_DELETE_NOTE_PATH, { data: { id } })
+      .delete(
+        process.env.REACT_APP_DELETE_NOTE_PATH,
+        { data: { id } },
+        {
+          headers: {
+            "auth-token": sessionStorage.getItem("auth-token"),
+          },
+        }
+      )
       .then(function (response) {
         setNotes(response.data);
       })
