@@ -117,6 +117,9 @@ const EditNote = ({ size, id, handleButtonClose }) => {
         params: {
           id,
         },
+        headers: {
+          "auth-token": sessionStorage.getItem("auth-token"),
+        },
       })
       .then(function (response) {
         setIdNote(response.data.id);

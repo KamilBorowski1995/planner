@@ -116,7 +116,7 @@ function Login() {
         .then(function (response) {
           setLoaded(true);
           console.log(response);
-          Auth.login(() => history.push("/"));
+          Auth.login(() => history.push("/"), response.data);
         })
         .catch(function (error, res) {
           setLoaded(true);

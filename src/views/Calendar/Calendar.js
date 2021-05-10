@@ -76,7 +76,11 @@ function Calendar() {
     setLoaded(false);
     axios.defaults.withCredentials = true;
     axios
-      .get(process.env.REACT_APP_GET_NOTE_PATH)
+      .get(process.env.REACT_APP_GET_NOTE_PATH, {
+        headers: {
+          "auth-token": sessionStorage.getItem("auth-token"),
+        },
+      })
       .then(function (response) {
         setAllNotes(response.data);
         setLoaded(true);

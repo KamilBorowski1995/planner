@@ -84,7 +84,11 @@ function List() {
     setLoaded(false);
     axios.defaults.withCredentials = true;
     axios
-      .get(process.env.REACT_APP_GET_NOTE_PATH)
+      .get(process.env.REACT_APP_GET_NOTE_PATH, {
+        headers: {
+          "auth-token": sessionStorage.getItem("auth-token"),
+        },
+      })
       .then(function (response) {
         setAllNotes(response.data);
         setLoaded(true);
@@ -120,7 +124,11 @@ function List() {
 
     axios.defaults.withCredentials = true;
     axios
-      .post(process.env.REACT_APP_ADD_NOTE_PATH, newTask)
+      .post(process.env.REACT_APP_ADD_NOTE_PATH, newTask, {
+        headers: {
+          "auth-token": sessionStorage.getItem("auth-token"),
+        },
+      })
       .then(function (response) {
         dispatch({ type: "SET_VALUE", name: "text", value: "" });
         setLoaded(true);
